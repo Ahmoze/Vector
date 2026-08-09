@@ -1,3 +1,23 @@
+🚀 **What's New in v2.0.20** 🚀
+
+🚀 **Highlight: Seamless Daemon-Powered Module Uninstaller & Core Fixes**
+
+Vector-X `v2.0.20` addresses critical system-level uninstallation behavior on modern Android operating systems (Android 11–16, MIUI, and HyperOS). 
+
+In previous builds, triggering the uninstall action relied on standard Android OS package intents, which were frequently blocked or silently dropped by vendor security policies. In `v2.0.20`, module uninstallation now hooks directly into Vector's native root daemon IPC service (`ConfigManager.uninstallPackage`). When you confirm module removal, Vector silently and cleanly uninstalls the package with system-level privileges, updates the daemon database, and seamlessly routes you back to your module list!
+
+---
+
+### 🛠️ Changelog:
+* **[Fix] Direct Daemon Uninstallation:** Replaced legacy Intent calls with Vector's native daemon service IPC for instant, silent package removal without system blocks.
+* **[Fix] Silent Failure Resolved:** Fixed an issue on modern Android versions (Android 11-16 / MIUI / HyperOS) where confirming module deletion on the configuration screen would do nothing.
+* **[Enhancement] Smooth Navigation Flow:** Upon successful uninstallation, the app automatically reloads module states and returns back to the main modules screen.
+* **[Infrastructure] GitHub Pages & Repo Fix:** Resolved deployment timeout issues on the module repository by adding automatic `.nojekyll` configuration and a modern web landing page.
+* **[Under-the-Hood]** Bumped core updates and OTA definitions to `v2.0.20`.
+
+
+---
+
 🚀 **What's New in v2.0.19** 🚀
 
 Description: 🚀 New Feature Highlight: Quick Module Uninstaller Tired of digging deep into your phone's Android Settings to remove modules that don't have a launcher icon? Vector-X v2.0.19 introduces a convenient, built-in "Uninstall" button right inside the Manager! Located directly in the top right corner of every module's configuration screen, you can now completely remove modules from your device in seconds. When you click the sleek Material Design trash can icon, Vector-X will gracefully prompt you with our signature blur dialog and instantly trigger the native Android uninstaller.
