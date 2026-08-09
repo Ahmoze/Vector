@@ -208,7 +208,7 @@ public class AppListFragment extends BaseFragment implements MenuProvider {
                                 if (!success) {
                                     try {
                                         Intent uninstallIntent = new Intent(Intent.ACTION_DELETE, Uri.fromParts("package", module.packageName, null));
-                                        uninstallIntent.putExtra(Intent.EXTRA_UNINSTALL_ALL_USERS, true);
+                                        uninstallIntent.putExtra("android.intent.extra.UNINSTALL_ALL_USERS", true);
                                         uninstallIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                         int res = ConfigManager.startActivityAsUserWithFeature(uninstallIntent, module.userId);
                                         if (res != 0) {
