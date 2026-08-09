@@ -260,7 +260,7 @@ index_html = f"""<!DOCTYPE html>
                 <div class="stat-lbl">Indexed Modules</div>
             </div>
             <div class="stat-card">
-                <div class="stat-val">v2.0.19+</div>
+                <div class="stat-val">v2.0.20+</div>
                 <div class="stat-lbl">Supported App Version</div>
             </div>
         </div>

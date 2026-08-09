@@ -20,6 +20,7 @@
 package org.ahmoze.vector.manager.ui.fragment;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -196,13 +197,39 @@ public class AppListFragment extends BaseFragment implements MenuProvider {
     @Override
     public boolean onMenuItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.menu_uninstall) {
+            if (module == null) return true;
             new BlurBehindDialogBuilder(requireActivity(), R.style.ThemeOverlay_MaterialAlertDialog_Centered_FullWidthButtons)
+                    .setIcon(module.app.loadIcon(requireContext().getPackageManager()))
+                    .setTitle(module.getAppName())
                     .setMessage(R.string.uninstall_module_confirm)
-                    .setPositiveButton(android.R.string.ok, (dialog, which) -> {
-                        android.net.Uri packageUri = android.net.Uri.parse("package:" + module.packageName);
-                        android.content.Intent uninstallIntent = new android.content.Intent(android.content.Intent.ACTION_DELETE, packageUri);
-                        startActivity(uninstallIntent);
-                    })
+                    .setPositiveButton(android.R.string.ok, (dialog, which) ->
+                            runAsync(() -> {
+                                boolean success = ConfigManager.uninstallPackage(module.packageName, module.userId);
+                                if (!success) {
+                                    try {
+                                        Intent uninstallIntent = new Intent(Intent.ACTION_DELETE, Uri.fromParts("package", module.packageName, null));
+                                        uninstallIntent.putExtra(Intent.EXTRA_UNINSTALL_ALL_USERS, true);
+                                        uninstallIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        int res = ConfigManager.startActivityAsUserWithFeature(uninstallIntent, module.userId);
+                                        if (res != 0) {
+                                            startActivity(uninstallIntent);
+                                        }
+                                        success = true;
+                                    } catch (Exception e) {
+                                        success = false;
+                                    }
+                                }
+                                String text = success ? getString(R.string.module_uninstalled, module.getAppName()) : getString(R.string.module_uninstall_failed);
+                                showHint(text, false);
+                                if (success) {
+                                    ModuleUtil.getInstance().reloadSingleModule(module.packageName, module.userId);
+                                    requireActivity().runOnUiThread(() -> {
+                                        if (!safeNavigate(R.id.action_app_list_fragment_to_modules_fragment)) {
+                                            safeNavigate(R.id.modules_nav);
+                                        }
+                                    });
+                                }
+                            }))
                     .setNegativeButton(android.R.string.cancel, null)
                     .show();
             return true;
